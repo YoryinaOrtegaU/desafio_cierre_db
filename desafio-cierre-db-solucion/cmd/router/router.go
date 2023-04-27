@@ -55,6 +55,8 @@ func (r *router) buildInvoicesRoutes() {
 	{
 		i.GET("", handler.GetAll())
 		i.POST("", handler.Post())
+		i.POST("subir", handler.PostAll())
+		i.PATCH("total", handler.CalculateTotal())
 	}
 }
 
@@ -80,5 +82,6 @@ func (r *router) buildSalesRoutes() {
 	{
 		s.GET("", handler.GetAll())
 		s.POST("", handler.Post())
+		s.POST("subir", handler.PostAll())
 	}
 }

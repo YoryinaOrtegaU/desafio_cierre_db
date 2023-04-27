@@ -4,7 +4,8 @@ import "github.com/bootcamp-go/desafio-cierre-db.git/internal/domain"
 
 type Service interface {
 	Create(invoices *domain.Invoices) error
-	ReadAll() ([]*domain.Invoices, error)
+	ReadAll() (*[]domain.Invoices, error)
+	CalculeTotal() (*[]domain.Invoices, error)
 }
 
 type service struct {
@@ -24,7 +25,10 @@ func (s *service) Create(invoices *domain.Invoices) error {
 
 }
 
-func (s *service) ReadAll() ([]*domain.Invoices, error) {
+func (s *service) ReadAll() (*[]domain.Invoices, error) {
 	return s.r.ReadAll()
 }
 
+func (s *service) CalculeTotal() (*[]domain.Invoices, error) {
+	return s.r.CalculeTotal()
+}

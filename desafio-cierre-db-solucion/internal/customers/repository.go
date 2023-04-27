@@ -20,8 +20,8 @@ func NewRepository(db *sql.DB) Repository {
 }
 
 func (r *repository) Create(customers *domain.Customers) (int64, error) {
-	query := "INSERT INTO customers (first_name, last_name, `condition`) VALUES (?, ?, ?)"
-	row, err := r.db.Exec(query, &customers.FirstName, &customers.LastName, &customers.Condition)
+	query := "INSERT INTO customers (id, first_name, last_name, `condition`) VALUES (?, ?, ?, ?)"
+	row, err := r.db.Exec(query, &customers.Id, &customers.FirstName, &customers.LastName, &customers.Condition)
 	if err != nil {
 		return 0, err
 	}

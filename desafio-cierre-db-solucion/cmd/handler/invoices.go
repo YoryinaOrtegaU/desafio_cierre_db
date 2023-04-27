@@ -41,3 +41,36 @@ func (i *Invoices) Post() gin.HandlerFunc {
 		ctx.JSON(201, gin.H{"data": invoices})
 	}
 }
+
+func (i *Invoices) PostAll() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		invoices := []domain.Invoices{}
+
+		err := ctx.ShouldBindJSON(&invoices)
+		if err != nil {
+			ctx.JSON(500, gin.H{"error": err.Error()})
+			return
+		}
+
+		for _, invoice := range invoices {
+			err = i.s.Create(&invoice)
+			if err != nil {
+				ctx.JSON(500, gin.H{"error": err.Error()})
+				return
+			}
+		}
+
+		ctx.JSON(201, gin.H{"data": invoices})
+	}
+}
+
+func (i *Invoices) CalculateTotal() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		invoices, err := i.s.CalculeTotal()
+		if err != nil {
+			ctx.JSON(500, gin.H{"error": err.Error()})
+			return
+		}
+		ctx.JSON(200, invoices)
+	}
+}
