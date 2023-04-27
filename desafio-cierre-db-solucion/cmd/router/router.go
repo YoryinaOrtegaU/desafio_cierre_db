@@ -67,6 +67,7 @@ func (r *router) buildProductsRoutes() {
 	{
 		p.GET("", handler.GetAll())
 		p.POST("", handler.Post())
+		p.POST("subir", handler.PostAll())
 	}
 }
 

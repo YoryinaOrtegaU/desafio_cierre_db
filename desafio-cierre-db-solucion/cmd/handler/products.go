@@ -41,3 +41,25 @@ func (p *Products) Post() gin.HandlerFunc {
 		ctx.JSON(201, gin.H{"data": products})
 	}
 }
+
+func (p *Products) PostAll() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+		products := []domain.Product{}
+
+		err := ctx.ShouldBindJSON(&products)
+		if err != nil {
+			ctx.JSON(500, gin.H{"error": err.Error()})
+			return
+		}
+
+		for _, product := range products {
+			err = p.s.Create(&product)
+			if err != nil {
+				ctx.JSON(500, gin.H{"error": err.Error()})
+				return
+			}
+		}
+
+		ctx.JSON(201, gin.H{"data": products})
+	}
+}
