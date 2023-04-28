@@ -5,6 +5,7 @@ import "github.com/bootcamp-go/desafio-cierre-db.git/internal/domain"
 type Service interface {
 	Create(customers *domain.Customers) error
 	ReadAll() ([]*domain.Customers, error)
+	TotalSalesByConditionCustomer() (map[string]float64, error)
 }
 
 type service struct {
@@ -25,4 +26,8 @@ func (s *service) Create(customers *domain.Customers) error {
 
 func (s *service) ReadAll() ([]*domain.Customers, error) {
 	return s.r.ReadAll()
+}
+
+func (s *service) TotalSalesByConditionCustomer() (map[string]float64, error) {
+	return s.r.TotalSalesByConditionCustomer()
 }

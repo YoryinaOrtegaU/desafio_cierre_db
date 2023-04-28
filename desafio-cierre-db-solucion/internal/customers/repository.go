@@ -9,6 +9,7 @@ import (
 type Repository interface {
 	Create(customers *domain.Customers) (int64, error)
 	ReadAll() ([]*domain.Customers, error)
+	TotalSalesByConditionCustomer() (map[string]float64, error)
 }
 
 type repository struct {
@@ -49,4 +50,25 @@ func (r *repository) ReadAll() ([]*domain.Customers, error) {
 		customers = append(customers, &customer)
 	}
 	return customers, nil
+}
+
+func (r *repository) TotalSalesByConditionCustomer() (map[string]float64, error) {
+	query := "SELECT c.`condition`, ROUND(SUM(i.total), 2)  FROM customers c INNER JOIN invoices i ON c.id = i.customer_id GROUP BY c.`condition`"
+
+	rows, err := r.db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	response := make(map[string]float64)
+	for rows.Next() {
+		var condition string
+		var total float64
+		err := rows.Scan(&condition, &total)
+		if err != nil {
+			return nil, err
+		}
+		response[condition] = total
+	}
+	return response, nil
 }

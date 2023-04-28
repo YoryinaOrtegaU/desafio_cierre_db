@@ -43,6 +43,7 @@ func (r *router) buildCustomersRoutes() {
 		c.GET("", handler.GetAll())
 		c.POST("", handler.Post())
 		c.POST("subir", handler.PostAll())
+		c.GET("totalCustomer", handler.TotalSalesByConditionCustomer())
 	}
 }
 

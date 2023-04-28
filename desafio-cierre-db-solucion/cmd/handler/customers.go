@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"net/http"
+
 	"github.com/bootcamp-go/desafio-cierre-db.git/internal/customers"
 	"github.com/bootcamp-go/desafio-cierre-db.git/internal/domain"
 	"github.com/gin-gonic/gin"
@@ -61,5 +63,17 @@ func (c *Customers) PostAll() gin.HandlerFunc {
 		}
 
 		ctx.JSON(201, gin.H{"data": customers})
+	}
+}
+
+func (c *Customers) TotalSalesByConditionCustomer() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+
+		response, err := c.s.TotalSalesByConditionCustomer()
+		if err != nil {
+			ctx.JSON(500, gin.H{"error": err.Error()})
+			return
+		}
+		ctx.JSON(http.StatusOK, response)
 	}
 }
