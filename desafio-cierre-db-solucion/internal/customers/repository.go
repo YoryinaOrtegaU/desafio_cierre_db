@@ -75,7 +75,11 @@ func (r *repository) TotalSalesByConditionCustomer() (map[string]float64, error)
 }
 
 func (r *repository) TopCustomers() (map[string]float64, error) {
-	query := "SELECT c.first_name, c.last_name, ROUND(i.total, 2) as Amount FROM customers c INNER JOIN invoices i ON c.id = i.customer_id where c.`condition` = 1 ORDER by Amount DESC limit 5"
+	query := `SELECT c.first_name, c.last_name, ROUND(i.total, 2) as Amount 
+	FROM customers c 
+	INNER JOIN invoices i 
+	ON c.id = i.customer_id where c.` + "`condition`" + ` = 1 
+	ORDER by Amount DESC limit 5`
 
 	rows, err := r.db.Query(query)
 	if err != nil {
