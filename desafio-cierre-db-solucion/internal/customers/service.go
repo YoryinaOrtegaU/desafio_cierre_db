@@ -6,6 +6,7 @@ type Service interface {
 	Create(customers *domain.Customers) error
 	ReadAll() ([]*domain.Customers, error)
 	TotalSalesByConditionCustomer() (map[string]float64, error)
+	TopCustomers() (map[string]float64, error)
 }
 
 type service struct {
@@ -30,4 +31,8 @@ func (s *service) ReadAll() ([]*domain.Customers, error) {
 
 func (s *service) TotalSalesByConditionCustomer() (map[string]float64, error) {
 	return s.r.TotalSalesByConditionCustomer()
+}
+
+func (s *service) TopCustomers() (map[string]float64, error) {
+	return s.r.TopCustomers()
 }

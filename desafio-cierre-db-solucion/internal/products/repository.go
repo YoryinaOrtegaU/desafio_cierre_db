@@ -9,6 +9,7 @@ import (
 type Repository interface {
 	Create(product *domain.Product) (int64, error)
 	ReadAll() ([]*domain.Product, error)
+	TopProducts() (map[string]int64, error)
 }
 
 type repository struct {
@@ -49,4 +50,29 @@ func (r *repository) ReadAll() ([]*domain.Product, error) {
 		products = append(products, &product)
 	}
 	return products, nil
+}
+
+func (r *repository) TopProducts() (map[string]int64, error) {
+	query := `SELECT p.description, SUM(s.quantity) AS q_total from products p 
+	inner join sales s 
+	on p.id = s.product_id
+	GROUP BY P.description
+	ORDER by q_total DESC limit 5`
+
+	rows, err := r.db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	response := make(map[string]int64)
+	for rows.Next() {
+		var product string
+		var quantityTotal int64
+		err := rows.Scan(&product, &quantityTotal)
+		if err != nil {
+			return nil, err
+		}
+		response[product] = quantityTotal
+	}
+	return response, nil
 }

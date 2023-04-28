@@ -10,6 +10,7 @@ type Repository interface {
 	Create(customers *domain.Customers) (int64, error)
 	ReadAll() ([]*domain.Customers, error)
 	TotalSalesByConditionCustomer() (map[string]float64, error)
+	TopCustomers() (map[string]float64, error)
 }
 
 type repository struct {
@@ -69,6 +70,29 @@ func (r *repository) TotalSalesByConditionCustomer() (map[string]float64, error)
 			return nil, err
 		}
 		response[condition] = total
+	}
+	return response, nil
+}
+
+func (r *repository) TopCustomers() (map[string]float64, error) {
+	query := "SELECT c.first_name, c.last_name, ROUND(i.total, 2) as Amount FROM customers c INNER JOIN invoices i ON c.id = i.customer_id where c.`condition` = 1 ORDER by Amount DESC limit 5"
+
+	rows, err := r.db.Query(query)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	response := make(map[string]float64)
+	for rows.Next() {
+		var first_name string
+		var last_name string
+		var amount float64
+		err := rows.Scan(&first_name, &last_name, &amount)
+		if err != nil {
+			return nil, err
+		}
+		customer := first_name + last_name
+		response[customer] = amount
 	}
 	return response, nil
 }

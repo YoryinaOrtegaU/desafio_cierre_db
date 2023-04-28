@@ -77,3 +77,15 @@ func (c *Customers) TotalSalesByConditionCustomer() gin.HandlerFunc {
 		ctx.JSON(http.StatusOK, response)
 	}
 }
+
+func (c *Customers) TopCustomers() gin.HandlerFunc {
+	return func(ctx *gin.Context) {
+
+		response, err := c.s.TopCustomers()
+		if err != nil {
+			ctx.JSON(500, gin.H{"error": err.Error()})
+			return
+		}
+		ctx.JSON(http.StatusOK, response)
+	}
+}
